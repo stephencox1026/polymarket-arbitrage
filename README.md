@@ -1,5 +1,9 @@
 # Polymarket Arbitrage Calculator
 
+## Strategy overview
+
+![Arbitrage strategy infographic](arb-strategy-infographic.png)
+
 > **Quantitative arbitrage tool** that detects cross-market pricing inefficiencies and computes expected return — transferable to pricing optimization and margin analysis.
 
 A browser-based calculator for prediction-market (Polymarket) arbitrage: enter market prices across outcomes/venues, and it surfaces guaranteed/positive-expected-value spreads and sizing, with a bet log for tracking P&L.
