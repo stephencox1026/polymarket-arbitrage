@@ -1,0 +1,967 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 114%;
+}
+
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: #0f0f12;
+  color: #e4e4e7;
+  margin: 0;
+  min-height: 100vh;
+  padding: 1.8rem;
+  font-size: 1.2rem;
+}
+
+.container {
+  max-width: 978px;
+  margin: 0 auto;
+}
+
+.log-date-display-wrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.25rem;
+}
+.log-date-display {
+  font-size: 0.7rem;
+  color: #52525b;
+  font-weight: 400;
+}
+
+/* KPI cards at top */
+.calc-kpi-section {
+  margin-bottom: 1.44rem;
+}
+.calc-kpi-section-inner {
+  overflow: hidden;
+  max-height: 264px;
+  transition: max-height 0.25s ease-out;
+}
+.calc-kpi-section.collapsed .calc-kpi-section-inner {
+  max-height: 0;
+}
+.calc-kpi-section.collapsed {
+  margin-bottom: 0;
+}
+.calc-kpi-title {
+  font-size: 1.08rem;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.6rem;
+}
+.calc-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 1.44rem;
+}
+@media (max-width: 640px) {
+  .calc-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.calc-kpi-card {
+  background: #222226;
+  border: none;
+  border-radius: 0;
+  padding: 1.91rem 1.5rem;
+  text-align: center;
+  min-height: 5.76rem;
+}
+.calc-kpi-label {
+  font-size: 0.97rem;
+  font-weight: 400;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.72rem;
+}
+.calc-kpi-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #e4e4e7;
+}
+.calc-kpi-value.positive { color: #e4e4e7; }
+.calc-kpi-value.negative { color: #f87171; }
+#calcKpiProfit, #calcKpiPct { color: #fff; }
+#calcKpiProfit.negative, #calcKpiPct.negative { color: #f87171; }
+
+/* Profit area chart under KPIs */
+.profit-chart-section {
+  margin-bottom: 1.44rem;
+}
+.profit-chart-header {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.6rem;
+}
+.profit-chart-title {
+  font-size: 1.08rem;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 400;
+}
+.profit-chart-section.collapsed .profit-chart-title {
+  display: none;
+}
+.profit-chart-wrap {
+  background: #222226;
+  padding: 0.79rem;
+  margin-bottom: 0;
+  border: 1px solid #000;
+  overflow: hidden;
+  max-height: 342px;
+  transition: max-height 0.25s ease-out, padding 0.25s ease-out, border-width 0.25s ease-out;
+}
+.profit-chart-wrap.collapsed {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+}
+.profit-chart-inner {
+  width: 100%;
+  height: 264px;
+  min-height: 216px;
+  display: block;
+}
+.profit-chart-inner svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.profit-chart-inner .chart-area {
+  fill: rgba(247, 147, 94, 0.25);
+}
+.profit-chart-inner .chart-bar {
+  fill: rgba(247, 147, 94, 0.5);
+}
+.profit-chart-inner .chart-line {
+  fill: none;
+  stroke: #f7935e;
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+.profit-chart-inner .chart-axis-line {
+  stroke: #2e2e32;
+  stroke-width: 1;
+}
+.profit-chart-inner .chart-axis-text {
+  font-size: 0.9rem;
+  fill: #71717a;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+.profit-chart-inner .chart-empty {
+  font-size: 1.08rem;
+  fill: #71717a;
+  font-style: italic;
+}
+.profit-chart-inner .chart-hover-dot {
+  fill: transparent;
+  cursor: pointer;
+  stroke: none;
+}
+.profit-chart-inner .chart-hover-dot:hover {
+  fill: rgba(247, 147, 94, 0.2);
+}
+.profit-chart-tooltip {
+  position: fixed;
+  z-index: 100;
+  background: #222226;
+  border: 1px solid #a1a1aa;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.96rem;
+  color: #a1a1aa;
+  border-radius: 0;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  font-weight: 400;
+}
+.profit-chart-tooltip .tooltip-date {
+  margin-bottom: 0.42rem;
+  font-weight: 400;
+  color: #a1a1aa;
+  text-align: center;
+}
+.profit-chart-tooltip .tooltip-row {
+  margin-bottom: 0.24rem;
+}
+.profit-chart-tooltip .tooltip-row:last-child {
+  margin-bottom: 0;
+}
+
+#calculatorSection.hidden,
+.calc-log-section.hidden,
+#book4Card.hidden {
+  display: none;
+}
+
+/* Bottom-right buttons: Save + Area Chart */
+.bottom-buttons-wrap {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 10;
+}
+.area-graph-toggle-btn {
+  width: 6.5rem;
+  min-width: 6.5rem;
+  height: 2rem;
+  min-height: 2rem;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: #2e2e32;
+  color: #a1a1aa;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.area-graph-toggle-btn:hover {
+  background: #4a4a52;
+  color: #e4e4e7;
+}
+
+/* Hide number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Outcome labels */
+
+.outcome-labels {
+  display: flex;
+  gap: 1.44rem;
+  margin-bottom: 1.44rem;
+}
+
+.outcome-labels label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.outcome-labels .label-text {
+  display: none;
+}
+
+.outcome-labels input {
+  padding: 1.35rem 0.72rem;
+  font-size: 1.14rem;
+  background: #2e2e32;
+  border: none;
+  border-radius: 0;
+  color: #fafafa;
+  text-align: center;
+}
+
+.outcome-labels input::placeholder {
+  color: #71717a;
+}
+
+.outcome-labels input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+/* Book cards */
+
+.books {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.44rem;
+  margin-bottom: 1.44rem;
+}
+
+.books.four-books {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 640px) {
+  .books {
+    grid-template-columns: 1fr;
+  }
+  .books.four-books {
+    grid-template-columns: 1fr;
+  }
+  .outcome-labels {
+    flex-direction: column;
+  }
+}
+
+.book-card {
+  background: #222226;
+  border: none;
+  border-radius: 0;
+  padding: 1.44rem;
+  transition: border-color 0.2s;
+}
+
+.book-name {
+  display: block;
+  width: 100%;
+  font-size: 1.44rem;
+  font-weight: 600;
+  color: #fafafa;
+  background: transparent;
+  border: none;
+  padding: 0 0 0.6rem 0;
+  margin-bottom: 1.08rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.book-name:focus {
+  outline: none;
+}
+
+.book-name::placeholder {
+  color: #52525b;
+}
+
+.odds-group label {
+  display: block;
+  margin-bottom: 0.72rem;
+}
+
+.odds-group label:last-child {
+  margin-bottom: 0;
+}
+
+.odds-label {
+  display: block;
+  font-size: 1.2rem;
+  color: #a1a1aa;
+  margin-bottom: 0.3rem;
+}
+
+.odds-input {
+  display: block;
+  width: 100%;
+  padding: 0.72rem 0.9rem;
+  font-size: 1.14rem;
+  background: #2e2e32;
+  border: none;
+  border-radius: 0;
+  color: #fafafa;
+  transition: border-color 0.2s;
+}
+
+.odds-input::placeholder {
+  color: #71717a;
+}
+
+.odds-input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.odds-input.best {
+  background: rgba(247, 147, 94, 0.5);
+}
+
+/* Implied probability badge */
+
+.implied {
+  display: block;
+  height: 1.62rem;
+  font-size: 1.03rem;
+  color: #71717a;
+  margin-top: 0.24rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Controls row */
+
+.controls-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.72rem;
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.controls-row > .control-bubble,
+.controls-row > .stake-bubble {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Five control bubbles: equal width, same row width as container below */
+.control-bubble {
+  height: 3rem;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  font-size: 1.14rem;
+  font-weight: 600;
+  box-sizing: border-box;
+  border: none;
+}
+
+.stake-bubble {
+  background: #2e2e32;
+  padding: 0.42rem 0.6rem;
+  gap: 0.42rem;
+}
+
+.stake-prefix {
+  color: #a1a1aa;
+  font-size: 1.37rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+
+.stake-bubble input {
+  width: 4rem;
+  padding: 0;
+  font-size: 1.37rem;
+  font-weight: 600;
+  text-align: center;
+  background: transparent;
+  border: none;
+  color: #fafafa;
+  flex: 1;
+  min-width: 0;
+}
+
+.stake-bubble input::placeholder {
+  color: #a1a1aa;
+  font-size: 1.37rem;
+  font-weight: 600;
+}
+
+.stake-bubble input:focus {
+  outline: none;
+}
+
+button.control-bubble {
+  padding: 0 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+button {
+  padding: 0.72rem 1.5rem;
+  font-size: 1.14rem;
+  font-weight: 600;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+#calc {
+  background: linear-gradient(rgba(247, 147, 94, 0.5), rgba(247, 147, 94, 0.5)), #222226;
+}
+
+#calc:hover {
+  background: linear-gradient(rgba(247, 147, 94, 0.65), rgba(247, 147, 94, 0.65)), #222226;
+}
+
+button:hover {
+  background: #4f46e5;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.btn-secondary {
+  background: #2e2e32;
+  color: #a1a1aa;
+}
+
+.btn-secondary:hover {
+  background: #4a4a52;
+  color: #e4e4e7;
+}
+
+/* Result panel */
+
+.result {
+  margin-top: 1.8rem;
+  padding: 1.44rem 1.8rem;
+  border-radius: 0;
+  font-size: 1.37rem;
+  line-height: 1.55;
+  animation: resultIn 0.3s ease-out;
+  border: none;
+}
+
+.result.hidden {
+  display: none;
+}
+
+@keyframes resultIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result.profit {
+  background: linear-gradient(rgba(247, 147, 94, 0.5), rgba(247, 147, 94, 0.5)), #222226;
+  border: none;
+  color: #fff;
+  font-size: 1.09rem;
+  font-weight: 400;
+  padding: 1.8rem 2.1rem;
+  line-height: 1.6;
+}
+.result.profit .summary {
+  font-size: 1.36rem;
+  font-weight: 400;
+  color: #fff;
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+}
+
+.result.no-arb {
+  background: rgba(69, 10, 10, 0.75);
+  border: none;
+  color: #fff;
+}
+
+.result.no-arb .best-case-title {
+  color: #fff;
+}
+
+.result.error {
+  background: rgba(69, 10, 10, 0.75);
+  border: none;
+  color: #fff;
+}
+
+.result h3 {
+  margin: 0 0 0.72rem 0;
+  font-size: 1.51rem;
+}
+
+.result.profit h3 {
+  color: #fff;
+  font-size: 1.68rem;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 1.02rem;
+}
+
+.result .action {
+  display: flex;
+  align-items: baseline;
+  gap: 0.48rem;
+  margin-bottom: 0.36rem;
+}
+
+.result .action .arrow {
+  flex-shrink: 0;
+  color: #fff9be;
+  font-weight: 400;
+}
+
+.result .arb-bet {
+  margin-bottom: 1.02rem;
+  padding-bottom: 1.02rem;
+  border-bottom: 1px solid #3a3a3e;
+}
+
+.result .arb-bet:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
+.result .arb-bet-header {
+  margin-bottom: 0.42rem;
+  padding-left: 1.5rem;
+  font-weight: 400;
+  color: #fff;
+  font-size: 1.89rem;
+}
+
+.result.profit .arb-bet {
+  margin-bottom: 1.32rem;
+  padding-bottom: 1.32rem;
+}
+.result.profit .arb-bet:last-of-type {
+  margin-bottom: 0.72rem;
+  padding-bottom: 0.72rem;
+}
+.result.profit .arb-bet-header {
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 0.6rem;
+}
+
+.result .arb-bet-detail {
+  font-size: 1.66rem;
+  margin-left: 3rem;
+  margin-bottom: 0.24rem;
+  color: #d1d5db;
+}
+
+.result.profit .arb-bet-detail {
+  font-size: 1.26rem;
+  font-weight: 400;
+  margin-bottom: 0.42rem;
+}
+
+.result .arb-bet-detail.arb-bet-detail-line {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.result .arb-bet-detail:last-child {
+  margin-bottom: 0;
+}
+
+.result .best-case {
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid #3a3a3e;
+}
+
+.result .best-case-title {
+  font-size: 1.02rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(254, 202, 202, 0.9);
+  margin: 0 0 0.48rem 0;
+}
+
+.result.profit .best-case-title {
+  font-size: 0.71rem;
+  font-weight: 400;
+}
+
+.result .best-case p {
+  margin: 0 0 0.6rem 0;
+  font-size: 1.14rem;
+}
+
+.result.profit .best-case p {
+  font-size: 0.79rem;
+  font-weight: 400;
+}
+
+.result .best-case-stake {
+  margin-top: 0.42rem;
+}
+
+.result .best-case-outcomes {
+  margin-top: 0.42rem;
+  line-height: 1.5;
+}
+
+.result .best-case-note {
+  margin-top: 0.6rem;
+  font-size: 1.08rem;
+  font-style: italic;
+  opacity: 0.95;
+}
+
+.result.profit .best-case-note {
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.result .summary {
+  margin-top: 0.72rem;
+  padding-top: 0.72rem;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 1.97rem;
+  color: #fff;
+}
+
+.result .pct {
+  font-weight: 400;
+}
+
+.result.profit .pct {
+  font-weight: 400;
+}
+
+/* How it works collapsible */
+
+.how-it-works {
+  margin-top: 2.16rem;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.how-it-works summary {
+  padding: 1.08rem 1.44rem;
+  font-size: 1.08rem;
+  font-weight: 400;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  user-select: none;
+  background: #222226;
+  transition: color 0.2s;
+  list-style: none;
+}
+
+.how-it-works summary::-webkit-details-marker {
+  display: none;
+}
+
+.how-it-works summary::before {
+  content: '+ ';
+  font-weight: 300;
+  color: rgba(247, 147, 94, 0.5);
+}
+
+.how-it-works[open] summary::before {
+  content: '- ';
+  font-weight: 300;
+  color: rgba(247, 147, 94, 0.5);
+}
+
+.how-it-works summary:hover {
+  color: #fafafa;
+}
+
+.how-content {
+  padding: 0.72rem 1.44rem 1.44rem 1.44rem;
+  font-size: 1.22rem;
+  color: #a1a1aa;
+  line-height: 1.6;
+  animation: resultIn 0.25s ease-out;
+}
+
+.how-content p {
+  margin: 0 0 0.6rem 0;
+}
+
+.how-content p:last-child {
+  margin-bottom: 0;
+}
+
+.how-tip {
+  color: rgba(247, 147, 94, 0.35);
+  font-style: italic;
+}
+
+/* Log section under How it works */
+.calc-log-section {
+  margin-top: 1.2rem;
+  padding: 0.9rem 1rem;
+  background: #222226;
+  border: none;
+  border-radius: 0;
+}
+.calc-log-title {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+.calc-log-list {
+  font-size: 0.72rem;
+  color: #d1d5db;
+  max-height: 14rem;
+  overflow-y: auto;
+}
+.calc-log-table-wrap {
+  overflow-x: auto;
+  padding-left: 0.25rem;
+}
+.calc-log-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+  color: #d1d5db;
+}
+.calc-log-table th,
+.calc-log-table td {
+  padding: 0.35rem 0.5rem;
+  border: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+.calc-log-table thead tr {
+  background: #2e2e32;
+}
+.calc-log-th {
+  font-weight: 400;
+  color: #fafafa;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.calc-log-table tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+.calc-log-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.04);
+}
+.calc-log-table .log-row-delete {
+  width: 1.25rem;
+  padding: 0.2rem 0;
+  border: none;
+  background: transparent;
+  color: #52525b;
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.calc-log-table .log-row-delete:hover {
+  color: #a1a1aa;
+}
+.s2-outcome-select {
+  width: 100%;
+  max-width: 8ch;
+  padding: 0.25rem 0.35rem;
+  font-size: 0.7rem;
+  background: #2e2e32;
+  color: #e4e4e7;
+  border: 1px solid #52525b;
+  border-radius: 0;
+  cursor: pointer;
+}
+.s2-outcome-select:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+.calc-log-td--center { text-align: center; }
+.calc-log-td--left { text-align: left; }
+.calc-log-td--right { text-align: right; }
+.calc-log-th--center { text-align: center; }
+.calc-log-th--left { text-align: left; }
+.calc-log-th--right { text-align: right; }
+.calc-log-empty { color: #71717a; font-style: italic; padding: 0.5rem 0; font-size: 0.9rem; }
+.calc-log-empty.hidden { display: none; }
+
+/* Nav link in bottom button row (Middle / Arbitrage) */
+a.area-graph-toggle-btn.nav-strategy-btn,
+.nav-strategy-btn.area-graph-toggle-btn {
+  text-decoration: none;
+  color: #a1a1aa;
+}
+a.area-graph-toggle-btn.nav-strategy-btn:hover,
+.nav-strategy-btn.area-graph-toggle-btn:hover {
+  color: #e4e4e7;
+}
+
+/* Strategy 2 — Line input per book card (match .odds-label and .odds-input) */
+.s2-line-row {
+  display: block;
+  margin-bottom: 0.72rem;
+}
+.s2-line-label {
+  display: block;
+  font-size: 1.2rem;
+  color: #a1a1aa;
+  margin-bottom: 0.3rem;
+}
+.s2-line-input {
+  display: block;
+  width: 100%;
+  padding: 0.72rem 0.9rem;
+  font-size: 1.14rem;
+  background: #2e2e32;
+  border: none;
+  border-radius: 0;
+  color: #fafafa;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.s2-line-input::placeholder {
+  color: #71717a;
+}
+.s2-line-input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+/* Strategy 2 — Scenario table in result panel */
+.s2-scenario-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.72rem 0 0.48rem;
+  font-size: 1.1rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.07);
+}
+.s2-scenario-table th,
+.s2-scenario-table td {
+  padding: 0.48rem 0.9rem;
+  text-align: center;
+  border-bottom: 1px solid #3a3a3e;
+}
+.s2-scenario-table th {
+  font-weight: 400;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.94rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.s2-scenario-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.s2-scenario-table .s2-edge-row td {
+  color: #d1d5db;
+}
+.s2-scenario-table .s2-edge-row td.s2-cell-neg {
+  color: #f87171;
+}
+.s2-scenario-table .s2-edge-row td.s2-cell-amount-neg {
+  color: #d1d5db;
+}
+.s2-scenario-table td.s2-cell-amount-neg {
+  color: #d1d5db;
+}
+.s2-scenario-table .s2-middle-row td {
+  color: #fff;
+  font-weight: 600;
+}
+.s2-scenario-table .s2-middle-row td.s2-cell-neg {
+  color: #f87171;
+}
+.s2-scenario-table .s2-middle-row td.s2-middle-profit {
+  color: #fff;
+  font-weight: 700;
+}
+.s2-scenario-table .s2-middle-row td.s2-cell-neg.s2-middle-profit {
+  color: #f87171;
+}
+

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poly Odds</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #1a1a1e;
+      color: #e4e4e7;
+      margin: 0;
+      padding: 1.5rem;
+      min-height: 100vh;
+    }
+    .tabs {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.875rem;
+      border-bottom: 1px solid #3a3a3e;
+      padding-bottom: 0.75rem;
+    }
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: none;
+      color: #a1a1aa;
+      cursor: pointer;
+      font-size: 1.5rem;
+      border-radius: 0;
+    }
+    .tab:hover { color: #e4e4e7; }
+    .tab.active { color: #fafafa; border-bottom: 2px solid #6366f1; margin-bottom: -1px; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .calc-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+    .container {
+      background: #222226;
+      border: 1px solid #3a3a3e;
+      border-radius: 0;
+      padding: 1.875rem;
+      flex: 1;
+      min-width: 18rem;
+      max-width: 36rem;
+    }
+    .container h3 {
+      margin: 0 0 1.5rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #a1a1aa;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: flex-end;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 1.3125rem;
+      color: #a1a1aa;
+    }
+    input {
+      padding: 0.9rem 1.125rem;
+      font-size: 1.5rem;
+      background: #2e2e32;
+      border: 1px solid #3a3a3e;
+      color: #fafafa;
+      border-radius: 0;
+      width: 12rem;
+    }
+    input:focus { outline: none; border-color: #6366f1; }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .result {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #3a3a3e;
+      font-size: 1.5rem;
+    }
+    .result strong { color: #a1a1aa; }
+    .profit { color: #22c55e; font-weight: 600; }
+    .crypto-placeholder { color: #71717a; padding: 3rem; font-size: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="tabs">
+    <button type="button" class="tab active" data-panel="calc">Calculator</button>
+    <button type="button" class="tab" data-panel="crypto">Crypto</button>
+  </div>
+
+  <div id="panelCalc" class="panel active">
+    <div class="calc-row">
+    <div class="container" id="container1">
+      <h3>Bet 1</h3>
+      <div class="row">
+        <label>
+          Amount bet ($)
+          <input type="number" id="amount1" min="0" step="0.01" placeholder="100" value="100" />
+        </label>
+        <label>
+          Odds (0–1)
+          <input type="number" id="odds1" min="0.01" max="1" step="0.001" placeholder="0.85" value="0.85" />
+        </label>
+      </div>
+      <div class="result" id="result1">
+        <strong>Payout:</strong> $<span id="payout1">—</span> · <strong class="profit">Profit: $<span id="profit1">—</span></strong>
+      </div>
+    </div>
+
+    <div class="container" id="container2">
+      <h3>Bet 2</h3>
+      <div class="row">
+        <label>
+          Amount bet ($)
+          <input type="number" id="amount2" min="0" step="0.01" placeholder="100" value="99" />
+        </label>
+        <label>
+          Odds (0–1)
+          <input type="number" id="odds2" min="0.01" max="1" step="0.001" placeholder="0.82" value="0.82" />
+        </label>
+      </div>
+      <div class="result" id="result2">
+        <strong>Payout:</strong> $<span id="payout2">—</span> · <strong class="profit">Profit: $<span id="profit2">—</span></strong>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div id="panelCrypto" class="panel">
+    <div class="crypto-placeholder">Crypto — coming soon or add your content here.</div>
+  </div>
+
+  <script>
+    function formatMoney(n) {
+      if (n == null || isNaN(n)) return '—';
+      return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function updateBet(amountId, oddsId, payoutId, profitId) {
+      const amount = parseFloat(document.getElementById(amountId).value);
+      const odds = parseFloat(document.getElementById(oddsId).value);
+      const payoutEl = document.getElementById(payoutId);
+      const profitEl = document.getElementById(profitId);
+      if (!Number.isFinite(amount) || !Number.isFinite(odds) || odds <= 0 || odds > 1) {
+        payoutEl.textContent = '—';
+        profitEl.textContent = '—';
+        return;
+      }
+      const shares = amount / odds;
+      const payout = shares * 1;
+      const profit = payout - amount;
+      payoutEl.textContent = formatMoney(payout);
+      profitEl.textContent = formatMoney(profit);
+    }
+
+    function updateAll() {
+      updateBet('amount1', 'odds1', 'payout1', 'profit1');
+      updateBet('amount2', 'odds2', 'payout2', 'profit2');
+    }
+
+    ['amount1', 'odds1', 'amount2', 'odds2'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', updateAll);
+    });
+
+    document.querySelectorAll('.tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var panelId = 'panel' + this.dataset.panel.charAt(0).toUpperCase() + this.dataset.panel.slice(1);
+        document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+        document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
+        this.classList.add('active');
+        var panel = document.getElementById(panelId);
+        if (panel) panel.classList.add('active');
+      });
+    });
+
+    updateAll();
+  </script>
+</body>
+</html>

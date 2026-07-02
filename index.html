@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arb Calculator — 3 Books</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="log-date-display-wrap" aria-hidden="true">
+      <span id="logDateDisplay" class="log-date-display"></span>
+    </div>
+    <div class="calc-kpi-section" id="calcKpiSection">
+      <div class="calc-kpi-section-inner">
+        <div class="calc-kpi-title">KPI Totals</div>
+        <div class="calc-kpi-grid">
+      <div class="calc-kpi-card">
+        <div class="calc-kpi-label">% Profit</div>
+        <div class="calc-kpi-value" id="calcKpiPct">0%</div>
+      </div>
+      <div class="calc-kpi-card">
+        <div class="calc-kpi-label">Total Profit</div>
+        <div class="calc-kpi-value" id="calcKpiProfit">$0</div>
+      </div>
+      <div class="calc-kpi-card">
+        <div class="calc-kpi-label">Total Amount Bet</div>
+        <div class="calc-kpi-value" id="calcKpiAmount">$0</div>
+      </div>
+        </div>
+    </div>
+    <div class="profit-chart-section">
+      <div class="profit-chart-header">
+        <span class="profit-chart-title">Profit over time</span>
+      </div>
+      <div class="profit-chart-wrap" id="profitChartWrap">
+        <div class="profit-chart-inner" id="profitChart" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div id="calculatorSection">
+    <div class="outcome-labels">
+      <label>
+        <span class="label-text">Outcome A Label</span>
+        <input type="text" id="labelA" value="" placeholder="Enter Bet A Here" />
+      </label>
+      <label>
+        <span class="label-text">Outcome B Label</span>
+        <input type="text" id="labelB" value="" placeholder="Enter Bet B Here" />
+      </label>
+    </div>
+
+    <div class="books" id="booksContainer">
+      <div class="book-card" data-book="0">
+        <input type="text" class="book-name" id="name1" value="Draft Kings" placeholder="Book name" />
+        <div class="odds-group">
+          <label>
+            <span class="odds-label" data-outcome="A">Bet A Odds</span>
+            <input type="text" inputmode="decimal" placeholder="+120" id="b1a" class="odds-input" autocomplete="off" />
+            <span class="implied" id="imp-b1a"></span>
+          </label>
+          <label>
+            <span class="odds-label" data-outcome="B">Bet B Odds</span>
+            <input type="text" inputmode="decimal" placeholder="-120" id="b1b" class="odds-input" autocomplete="off" />
+            <span class="implied" id="imp-b1b"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="book-card" data-book="1">
+        <input type="text" class="book-name" id="name2" value="Fan Duel" placeholder="Book name" />
+        <div class="odds-group">
+          <label>
+            <span class="odds-label" data-outcome="A">Bet A Odds</span>
+            <input type="text" inputmode="decimal" placeholder="+120" id="b2a" class="odds-input" autocomplete="off" />
+            <span class="implied" id="imp-b2a"></span>
+          </label>
+          <label>
+            <span class="odds-label" data-outcome="B">Bet B Odds</span>
+            <input type="text" inputmode="decimal" placeholder="-120" id="b2b" class="odds-input" autocomplete="off" />
+            <span class="implied" id="imp-b2b"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="book-card" data-book="2">
+        <input type="text" class="book-name" id="name3" value="Polymarket" placeholder="Book name" />
+        <div class="odds-group polymarket-prices">
+          <label>
+            <span class="odds-label" id="label3a">Bet A Odds</span>
+            <input type="text" inputmode="decimal" placeholder=".51" id="b3a" class="odds-input polymarket-price" autocomplete="off" />
+            <span class="implied" id="imp-b3a"></span>
+          </label>
+          <label>
+            <span class="odds-label" id="label3b">Bet B Odds</span>
+            <input type="text" inputmode="decimal" placeholder=".74" id="b3b" class="odds-input polymarket-price" autocomplete="off" />
+            <span class="implied" id="imp-b3b"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="book-card hidden" id="book4Card" data-book="3">
+        <input type="text" class="book-name" id="name4" value="" placeholder="Book name" />
+        <div class="odds-group">
+          <label>
+            <span class="odds-label" data-outcome="A">Bet A Odds</span>
+            <input type="text" inputmode="decimal" placeholder="+120" id="b4a" class="odds-input" autocomplete="off" />
+            <span class="implied" id="imp-b4a"></span>
+          </label>
+          <label>
+            <span class="odds-label" data-outcome="B">Bet B Odds</span>
+            <input type="text" inputmode="decimal" placeholder="-120" id="b4b" class="odds-input" autocomplete="off" />
+            <span class="implied" id="imp-b4b"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <div class="control-bubble stake-bubble">
+        <span class="stake-prefix">$</span>
+        <input type="text" inputmode="numeric" value="" id="stake" placeholder="Amount" autocomplete="off" />
+      </div>
+      <button type="button" id="calc" class="control-bubble">Calculate</button>
+      <button type="button" id="bet" class="btn-secondary control-bubble">Log</button>
+      <button type="button" id="reset" class="btn-secondary control-bubble">Reset</button>
+      <button type="button" id="loadExample" class="btn-secondary control-bubble" title="Load NBA O/U rebounds example">Load Example</button>
+    </div>
+
+    <div id="result" class="result hidden" aria-live="polite"></div>
+    </div>
+
+    <div class="calc-log-section" id="calcLogSection">
+      <div class="calc-log-title">Log</div>
+      <div class="calc-log-list">
+        <div class="calc-log-table-wrap" id="calcLogTableWrap"></div>
+        <div id="calcLogEmpty" class="calc-log-empty hidden">No Entries Yet</div>
+      </div>
+    </div>
+    <details class="how-it-works" id="howItWorks">
+      <summary>How It Works</summary>
+      <div class="how-content">
+        <p><strong>1. Best line:</strong> For each outcome, pick the highest odds across the 3 books.</p>
+        <p><strong>2. Arb check:</strong> Convert each best odds to implied probability (1 / odds) and sum them. If the sum is below 100%, an arb exists.</p>
+        <p><strong>3. Stake split:</strong> Stake each outcome in proportion to its implied probability. The book with the best odds for that outcome is where you place it.</p>
+        <p><strong>4. Profit:</strong> Guaranteed payout = total stake / sum. Profit = payout - total stake.</p>
+        <p class="how-tip">Tip: A 5%+ arb margin is ideal. Anything under 1-2% may not be worth the execution risk.</p>
+      </div>
+    </details>
+  </div>
+  <div class="bottom-buttons-wrap">
+    <button type="button" class="area-graph-toggle-btn" id="saveStateBtn" aria-label="Save current state">Save</button>
+    <button type="button" class="area-graph-toggle-btn" id="addBookBtn" aria-label="Add or remove fourth book">+ Book</button>
+    <button type="button" class="area-graph-toggle-btn" id="kpiToggleBtn" aria-label="Toggle KPI cards">KPIs</button>
+    <button type="button" class="area-graph-toggle-btn" id="areaGraphToggleBtn" aria-label="Toggle area chart">Area Chart</button>
+    <button type="button" class="area-graph-toggle-btn" id="calculatorToggleBtn" aria-label="Toggle calculator">Calculator</button>
+    <button type="button" class="area-graph-toggle-btn" id="logToggleBtn" aria-label="Toggle log">Log</button>
+    <a href="strategy2.html" class="area-graph-toggle-btn nav-strategy-btn">Middle</a>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
