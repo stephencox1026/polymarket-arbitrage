@@ -1,5 +1,11 @@
 # Polymarket Arbitrage Calculator
 
+## Live demo
+
+[![Arbitrage calculator](assets/preview.png)](https://stephencox1026.github.io/polymarket-arbitrage/)
+
+**[Open the live calculator](https://stephencox1026.github.io/polymarket-arbitrage/)** — enter odds across books and see arbitrage/EV in real time.
+
 ## Strategy overview
 
 ![Arbitrage strategy infographic](arb-strategy-infographic.png)
